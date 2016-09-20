@@ -8,7 +8,7 @@ tutorial
 * 選項 1 會輸出 ```puts()``` 的 address 扣掉 1280 的值，可以從這邊推出 libc address。
 * 選項 2 會接收長達 460 bytes 的輸入，並從輸入 buffer 開始輸出 324bytes。透過 IDA 得知該 buffer 的起點位在  ```rbp-320``` ，所以這裡可以 leak 出位於 ```rbp-8``` 的 canary。
 
-```clike
+```C
 write(socket_num, "Time to test your exploit...\n", 0x1DuLL);
 write(socket_num, ">", 1uLL);
 read(socket_num, &s, 460uLL);
