@@ -10,16 +10,16 @@
 以及程式中 global 段的幾個變數：
 ```
  0|-------------|
-  |             |  # point to allocated 40bytes
-  |   big_ptr   |
+  |             |
+  |   big_ptr   |  # point to allocated 40bytes
   |             |
  8|-------------|
-  |             |  # point to allocated 4000bytes
-  |  huge_ptr   |
+  |             |
+  |  huge_ptr   |  # point to allocated 4000bytes
   |             |
 16|-------------| 
-  |             |  # point to allocated 400000bytes
-  |  small_ptr  |
+  |             |
+  |  small_ptr  |  # point to allocated 400000bytes
   |             |
 24|-------------|
   |   big_flag  |  # set to 1 when use keep big secret
