@@ -32,7 +32,7 @@
 
 ## 解題流程
 
-在開始之前要先知道一件事。動態申請的空間到一定的大小後，會使用 `mmap` 來分配，得到的空間將不會在 heap 上。不過當我們 `free` 掉這塊空間後再次分配相同大小的空間，會發現他改用 `malloc` 來分配了！我有試著觀察這個機制，可以參考 [mmap_test](https://www.google.com.tw/)。
+在開始之前要先知道一件事。動態申請的空間到一定的大小後，會使用 `mmap` 來分配，得到的空間將不會在 heap 上。不過當我們 `free` 掉這塊空間後再次分配相同大小的空間，會發現他改用 `malloc` 來分配了！我有試著觀察這個機制，可以參考 [mmap_test](https://github.com/briansp8210/CTF_writeup/blob/master/HITCONCTF_2016_qual/SecretHolder/mmap_test.md)。
 
 於是我們可以利用這點讓 huge 和 small 兩塊 chunk 重疊，並讓 big 接在 small 後面。
 接著就可以開始準備做 unlink 的準備，這裡我們打算在 small chunk 裡面造假 chunk，接著 `free` big chunk，目標是在 unlink 後 huge_ptr 會等於 `(&huge_ptr - 0x18)`。

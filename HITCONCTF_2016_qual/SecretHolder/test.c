@@ -12,10 +12,10 @@ int main(void)
     free(r);
     s = malloc(0x40000);
     free(s);
-	t = malloc(0x64000);
-	free(t);
-	u = malloc(0x64000);
-	free(u);
+    t = malloc(0x64000);
+    free(t);
+    u = malloc(0x64000);
+    free(u);
 
     return 0;
 }
