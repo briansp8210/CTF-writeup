@@ -20,6 +20,6 @@ done
 ```
 
 跑完後發現 `pdf0.pdf` 還解出了一個 `start.pdf`，這個 `start.pdf` 裡面又夾帶著同名的 `start.pdf`，打開來就會看到 flag 了。
-另外應該要把 scipt 改成讓他邊拆邊把之前解出來的給刪掉比較好，因為全部打開後蠻佔空間的QQ
+另外應該要把 script 改成讓他邊拆邊把之前解出來的給刪掉比較好，因為全部打開後蠻佔空間的QQ
 
 `flag{pdf_packing_is_fun}`
