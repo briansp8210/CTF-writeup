@@ -1,7 +1,7 @@
 # checker
 
->category: Exploit
->points: 300
+> category: Exploit
+> points: 300
 
 在解這題的時候走錯方向，一直想 overflow 在 bss 段的 name buffer 來看能不能印出 flag。後來看到 bruce 學長的思路，以及在賽後看了 [writeup](https://github.com/Inndy/ctf-writeup/tree/master/2016-seccon/checker)，才知道這題可以用 SSP (Stack Smash Protector) 來做。
 
