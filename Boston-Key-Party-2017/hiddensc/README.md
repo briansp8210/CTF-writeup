@@ -23,11 +23,11 @@ So if we know the random address, we can get shell immediately !
 
 ## Exploit
 
-> Before doing following work, be sure to do the setting :
-> `echo 1 | sudo tee /proc/sys/vm/overcommit_memory`
-> This will enable us to allocate huge amount of memory to do the exploit !
-> reference :
-> [Overcommit and OOM](http://www.win.tue.nl/~aeb/linux/lk/lk-9.html#ss9.6)
+> Before doing following work, be sure to do the setting :  
+> `echo 1 | sudo tee /proc/sys/vm/overcommit_memory`  
+> This will enable us to allocate huge amount of memory to do the exploit !  
+> reference :  
+> [Overcommit and OOM](http://www.win.tue.nl/~aeb/linux/lk/lk-9.html#ss9.6)  
 > [overcommit document](https://www.kernel.org/doc/Documentation/vm/overcommit-accounting)
 
 By observation, when we allocating huge size of memory, the allocated space may locate at :
