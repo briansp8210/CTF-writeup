@@ -90,8 +90,8 @@ int bof() {
 最後利用 [Ropper](https://github.com/sashs/Ropper) 找出要用的 gadgets *( ROPgadget 解出來的 offset 不知道為什麼怪怪的 )*。
 
 ```
-0x140001d45: pop rsi; ret;            # 先把參數給 rsi
-0x140001519: pop rdi; ret;            # system 的位址丟給 rdi
+0x140001d45: pop rsi; ret;            # 把 system 的位址給 rsi
+0x140001519: pop rdi; ret;            # 接著把參數給 rdi
 0x140002648: mov rcx, rdi; call rsi;  # 把參數傳給 rcx 後呼叫 system
 ```
 
