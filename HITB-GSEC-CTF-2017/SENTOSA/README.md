@@ -23,7 +23,7 @@ Choose your action:
 5. Exit
 ```
 
-* Start a project can create a project, which has information stored in heap with following structure, and the address of this chunk will be stored to a global array
+* `Start a project` can create a project, which has information stored in heap with following structure, and the address of this chunk will be stored to a global array
 
 ```
 +---------------+
@@ -43,9 +43,9 @@ Choose your action:
 +---------------+
 ```
 
-* View all projects will fetch each information chunk according to aforementioned global array and display their information
-* Edit a project is not implemented
-* Cancel a project will do sanity check and free the information chunk of a specific project. Then clear this address from the global array
+* `View all projects` will fetch each information chunk according to aforementioned global array and display their information
+* `Edit a project` is not implemented
+* `Cancel a project` will do sanity check and free the information chunk of a specific project. Then clear this address from the global array
 
 In start project function, all attributes are directly written, while `name` is first read into stack then `strncpy` to heap. The read input function looks like this:
 
@@ -85,20 +85,20 @@ void read_input(char *target, int len)
 
 Thus, we can input only length-1 bytes, and a null byte will be appended at the end.  
 But wait, if `len` is 0, then we can input massive number of bytes, which indeed long enough to overwrite return address !  
-There is canary on stack, however, so the only valuable thing I can overwrite is the address points to the information chunk. Arbitrary read is possible by overwriting this pointer to `target address - 4`, this fake pointer will be stored to global array, then we can use Visit to print the contents of target address.
+There is canary on stack, however, so the only valuable thing I can overwrite is the address points to the information chunk. Arbitrary read is possible by overwriting this pointer to `target address - 4`, this fake pointer will be stored to global array, then we can use Visit to print the contents of target address when name field is printed.
 
 <pre>
-            0x00007f23e9682780      0x00000010e93b36e0
+            0x00007f1a7d560780      0x000000437d2916e0
 name buf -> 0x0000000000000000      0x0000000000000000
             0x0000000000000000      0x0000000000000000
             0x0000000000000000      0x0000000000000000
             0x0000000000000000      0x0000000000000000
             0x0000000000000000      0x0000000000000000
-            0x0000000000000000  +-> <b>0x5611a9f51010</b>0000
-            0x0000000000000000  |   0xce233afa9dff3a00
-            0x00005611a9c4829a  |   0x00005611a9c483f8
-            0x00007ffd1baf9ff4  |   0x00005611a9c47a30
-            0x00007ffd1bafa110  |   0x00005611a9c48117 <- ret address of Start project
+            0x0000000000000000  +-> <b>0x55f084ace010</b>0000
+            0x0000000000000000  |   0x69ad78b4f31ef400
+            0x000055f082b0a29a  |   0x000055f082b0a3f8
+            0x00007ffcce3e5004  |   0x000055f082b09a30
+            0x00007ffcce3e5120  |   0x000055f082b0a117 <- ret address of Start project
                                 |
                         information pointer
 </pre>
@@ -108,9 +108,40 @@ name buf -> 0x0000000000000000      0x0000000000000000
 First, since still no useful address available, I want to use null-byte overflow **(since the read input function will append null byte, we can't control the value of last byte)** to make the pointer points to somewhere a heap address locates, .  
 To achieve this goal, I create proper number and size of project, then free two fast chunks with the same size, so that the fd field of target chunk will be filled, thus successfully get heap address.
 
-> I make the fd field locates at price field of a project, so only 4 bytes of the heap address are leaked.  
-> However, the lowest byte is fixed, and the highest byte, by observation, is mostly changed between 0x55 and 0x56, so we can still get correct address  most of the time.
+<pre>
+I make the fd field locates at price field of a project, so only 4 bytes of the heap address are leaked.  
+However, the lowest byte is fixed, and the highest byte, by observation, is mostly changed between 0x55 and 0x56,  
+so we can still get correct address  most of the time.
 
+0x55f084ace000: 0x0000000000000000      0x0000000000000061
+0x55f084ace010: 0x4141414100000043      0x0000000000000000
+0x55f084ace020: 0x0000000000000000      0x0000000000000000
+0x55f084ace030: 0x0000000000000000      0x0000000000000000
+0x55f084ace040: 0x0000000000000000      0x0000000000000000
+0x55f084ace050: 0x0000000000000000      0x0000000100000001
+0x55f084ace060: 0x0000000300000002      0x0000000000000051
+0x55f084ace070: 0x4242424200000033      0x0000000000000000
+0x55f084ace080: 0x0000000000000000      0x0000000000000000
+0x55f084ace090: 0x0000000000000000      0x0000000000000000
+0x55f084ace0a0: 0x0000000000000000      0x0000000400000001
+0x55f084ace0b0: 0x0000000600000005      0x0000000000000051
+0x55f084ace0c0: 0x4343434300000033      0x0000000000000000
+0x55f084ace0d0: 0x0000000000000000      0x0000000000000000
+0x55f084ace0e0: 0x0000000000000000      0x0000000000000000
+0x55f084ace0f0: 0x0000000000000000      0x0000000700000001
+0x55f084ace100: <b>0x0000000900000008      0x0000000000000041</b>
+0x55f084ace110: <b>0x000055<u>f084ace1</u>80      0x0000000000000000</b>
+0x55f084ace120: 0x0000000000000000      0x0000000100000000
+0x55f084ace130: 0x0000000b0000000a      0x000000000000000c
+0x55f084ace140: 0x0000000000000000      0x0000000000000021
+0x55f084ace150: 0x0000004500000003      0x0000000d00000001
+0x55f084ace160: 0x0000000f0000000e      0x0000000000000021
+0x55f084ace170: 0x0000010000000000      0x0000110000001000
+0x55f084ace180: 0x0000000000001200      0x0000000000000041
+0x55f084ace190: 0x0000000000000000      0x0000000000000000
+0x55f084ace1a0: 0x0000000000000000      0x0000000000000000
+0x55f084ace1b0: 0x0000000000000000      0x0000001300000001
+</pre>
 
 With heap base address, I can arbitrarily read content on heap.  
 My plan is to allocate small chunks then free one of them so that libc address will appear on heap. Unfortunately, the maximum chunk can be allocated is still fast chunk, so I had to forge these small chunks, which took quite lots of time since null byte can't be used under the usage of `strncpy`, and sanity check must be satisfied.  
