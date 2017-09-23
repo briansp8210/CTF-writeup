@@ -109,9 +109,7 @@ First, since still no useful address available, I want to use null-byte overflow
 To achieve this goal, I create proper number and size of project, then free two fast chunks with the same size, so that the fd field of target chunk will be filled, thus successfully get heap address.
 
 <pre>
-I make the fd field locates at price field of a project, so only 4 bytes of the heap address are leaked.  
-However, the lowest byte is fixed, and the highest byte, by observation, is mostly changed between 0x55 and 0x56,  
-so we can still get correct address  most of the time.
+The fd field locates across price and area field of a project
 
 0x55f084ace000: 0x0000000000000000      0x0000000000000061
 0x55f084ace010: 0x4141414100000043      0x0000000000000000
@@ -130,7 +128,7 @@ so we can still get correct address  most of the time.
 0x55f084ace0e0: 0x0000000000000000      0x0000000000000000
 0x55f084ace0f0: 0x0000000000000000      0x0000000700000001
 0x55f084ace100: <b>0x0000000900000008      0x0000000000000041</b>
-0x55f084ace110: <b>0x000055<u>f084ace1</u>80      0x0000000000000000</b>
+0x55f084ace110: <b>0x000055f084ace180      0x0000000000000000</b>
 0x55f084ace120: 0x0000000000000000      0x0000000100000000
 0x55f084ace130: 0x0000000b0000000a      0x000000000000000c
 0x55f084ace140: 0x0000000000000000      0x0000000000000021
